@@ -1,0 +1,41 @@
+
+#installing mysql
+- hosts: mysql:children
+  gather_facts: no
+  roles:
+    - mysql
+
+#mysql-master-slave replication
+- hosts: master
+  roles:
+    - mysql-master  
+
+- hosts: slave
+  roles:
+    - mysql-slave 
+
+#webserver installation
+- hosts: lamp
+  roles:
+     - lamp
+
+#loadbalencer
+- hosts: haproxy
+  roles:
+    - haproxy
+
+#nagios server
+- hosts: nagios
+  roles:
+   - nagios
+
+#nrpe installation on all clients
+- hosts: nagios-client:children
+  roles:
+   - nagios-client
+
+
+#creating nagios mysql users on clients
+- hosts: master
+  roles:
+    - mysql-nagios

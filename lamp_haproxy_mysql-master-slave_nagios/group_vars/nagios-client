@@ -1,0 +1,8 @@
+nagios_server_ip: 10.4.0.9
+
+
+#password for nagios mysql user on master and slave
+nagios_pass: REDhat@123
+
+
+

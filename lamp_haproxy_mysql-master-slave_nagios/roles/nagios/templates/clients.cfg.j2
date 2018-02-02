@@ -1,0 +1,115 @@
+define host {
+        use                                 linux-server
+        host_name                           mysql_master
+        alias                               mysql_master
+        address                             {{ mysql_master_ip }}
+        max_check_attempts                    5
+        check_period                        24x7
+        notification_interval               30
+        notification_period                 24x7
+}
+
+
+define service {
+    use generic-service
+    host_name  mysql_master
+    service_description Check MYSQL via TCP port
+    check_command check_tcp!3306
+}
+
+
+define service {
+    use generic-service
+    host_name mysql_master
+    service_description Check MySQL Database throgh mysql port
+    check_command check_mysql!nagios!{{ nagios_mysql_password }}!mysql
+}
+
+define service {
+    use generic-service
+    host_name mysql_master
+    service_description Check MySQL status using  check_mysql_health PLUGIN
+    check_command check_mysql_health!3306!nagios!{{ nagios_mysql_password }}!uptime
+}
+
+################################################################
+
+define host {
+        use                                 linux-server
+        host_name                           mysql_slave
+        alias                               mysql_slave
+        address                             {{ mysql_slave_ip }}
+        max_check_attempts                    5
+        check_period                        24x7
+        notification_interval               30
+        notification_period                 24x7
+}
+
+
+define service {
+    use generic-service
+    host_name  mysql_slave
+    service_description Check MYSQL via TCP port
+    check_command check_tcp!3306
+}
+
+
+
+define service {
+    use generic-service
+    host_name mysql_slave
+    service_description Check MySQL Database through mysql port
+    check_command check_mysql!nagios!{{ nagios_mysql_password }}!mysql
+}
+
+define service {
+    use generic-service
+    host_name mysql_slave
+    service_description Check MySQL status using check_mysql_health PLUGIN
+    check_command check_mysql_health!3306!nagios!{{ nagios_mysql_password }}!uptime
+}
+######################################################################
+
+
+define host {
+        use                                 linux-server
+        host_name                           lamp1
+        alias                               lamp1
+        address                             {{ lamp1_ip }}
+        max_check_attempts                    5
+        check_period                        24x7
+        notification_interval               30
+        notification_period                 24x7
+}
+
+define service {
+    use generic-service
+    host_name  lamp1
+    service_description Check http
+    check_command check_http
+}
+
+
+
+
+#####################################################################
+
+define host {
+        use                                 linux-server
+        host_name                           lamp2
+        alias                               lamp2
+        address                             {{ lamp2_ip }}
+        max_check_attempts                    5
+        check_period                        24x7
+        notification_interval               30
+        notification_period                 24x7
+}
+
+define service {
+    use generic-service
+    host_name  lamp2
+    service_description Check http
+    check_command check_http
+}
+
+

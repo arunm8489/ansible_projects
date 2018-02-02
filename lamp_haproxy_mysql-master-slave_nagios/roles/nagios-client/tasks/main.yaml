@@ -1,0 +1,24 @@
+- name: installing epel-release
+  yum: 
+   name: epel-release
+   state: installed
+
+- name: install nrpe and others
+  yum:
+   name: "{{ item }}"
+   state: installed
+  with_items:
+   - nrpe
+   - nagios-plugins-all 
+   - openssl 
+
+- name: pushing nrpe.cfg
+  template:
+    src: nrpe.cfg.j2
+    dest: /etc/nagios/nrpe.cfg
+
+- name: start nrpe
+  service:
+   name: nrpe
+   state: started
+   enabled: yes

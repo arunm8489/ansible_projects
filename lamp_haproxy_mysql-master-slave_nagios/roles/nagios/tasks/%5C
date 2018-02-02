@@ -1,0 +1,36 @@
+define host {
+        use                                 linux-server
+        host_name                           mysql
+        alias                               mysqlserver
+        address                           10.3.0.5
+        max_check_attempts                   5
+        check_period                        24x7
+        notification_interval             30
+        notification_period               24x7
+}
+
+
+define service {
+    use generic-service
+    host_name  mysql
+    service_description Check MYSQL via TCP port
+    check_command check_tcp!3306
+}
+
+
+
+define service {
+    use generic-service
+    host_name mysql
+    service_description Check MySQL Database
+    check_command check_mysql!nagios!password!mysql
+}
+
+
+define service {
+    use generic-service
+    host_name mysql
+    service_description Check MySQL status using PLUGIN
+    check_command check_mysql_health!3306!nagios!password!uptime
+}
+

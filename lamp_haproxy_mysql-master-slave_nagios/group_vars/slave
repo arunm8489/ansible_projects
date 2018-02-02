@@ -1,0 +1,6 @@
+#slave
+master_ip: 10.4.0.4
+slave_user: slave_user
+master_password: REDhat@123
+master_file: mysql1-bin.000002
+master_position: 1054

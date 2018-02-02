@@ -1,0 +1,21 @@
+- name: installing dependencies
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - gcc
+    - pcre-static
+    - pcre-devel
+    - libselinux-python
+- name: installing haproxy
+  yum:
+   name: haproxy
+   state: present
+  notify: restart haproxy
+
+- name: pushing haproxy-cfg template
+  template:
+     src: haproxy.cfg.j2
+     dest: /etc/haproxy/haproxy.cfg
+     backup: yes
+  notify: restart haproxy   

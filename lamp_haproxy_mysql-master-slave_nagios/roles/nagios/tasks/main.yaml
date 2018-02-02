@@ -1,0 +1,73 @@
+- name: installing epel release
+  yum:
+    name: epel-release
+    state: installed
+
+- name: installing perl-db-mysql
+  yum:
+    name: perl-DBD-mysql
+    state: installed
+
+- name: installing nagios
+  yum:
+   name: nagios*
+   state: installed
+
+- name: pushing contact.cfg
+  template:
+   src: contacts.cfg.j2 
+   dest: /etc/nagios/objects/contacts.cfg
+
+- name: setting password for nagios
+  command: htpasswd -s -c -b /etc/nagios/passwd nagiosadmin {{ nagiospassword }}
+
+- name: starting nagios and httpd
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - nagios
+    - httpd
+
+- name: editing nagios.cfg
+  lineinfile:
+    dest: /etc/nagios/nagios.cfg
+    regexp: '#(cfg_dir=/etc/nagios/servers)'
+    line: '\1'
+    backrefs: yes
+
+- name: creating servers folder
+  file:
+    path: /etc/nagios/servers
+    state: directory
+    
+- name: pushing clients file
+  template:
+    src: clients.cfg.j2
+    dest: /etc/nagios/servers/clients.cfg
+
+- name: pushing commands file
+  template:
+    src: commands.cfg.j2
+    dest: /etc/nagios/objects/commands.cfg
+  notify: restart nagios
+
+
+- name: downloading and extracting chek_health_plugin
+  unarchive:
+     src: https://labs.consol.de/assets/downloads/nagios/check_mysql_health-2.2.2.tar.gz
+     dest: /opt/
+     remote_src: yes
+
+- name: compiling
+  shell: "./configure && make && make install chdir=/opt/check_mysql_health-2.2.2"
+
+- name: copying plugin to other location
+  copy:
+    src: /opt/check_mysql_health-2.2.2/plugins-scripts/check_mysql_health
+    dest: /usr/lib64/nagios/plugins/check_mysql_health
+    mode: 0655
+    remote_src: yes
+  notify: restart nagios
+

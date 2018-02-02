@@ -1,0 +1,18 @@
+
+#ip of mysql and webserver hosts to be monitored
+mysql_master_ip: 10.4.0.4
+mysql_slave_ip: 10.4.0.5
+lamp1_ip:  10.4.0.6
+lamp2_ip: 10.4.0.7
+
+#preent in cients.cfg
+nagios_mysql_password: REDhat@123
+
+
+serveradmin_mail : arunm8489@gmail.com
+
+#nagios password for web access
+nagiospassword: redhat
+
+
+

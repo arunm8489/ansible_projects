@@ -1,0 +1,45 @@
+- name: installing httpd
+  yum:
+    name: httpd
+    state: latest
+- name: installing php and dependencies
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+   - php
+   - php-mysql
+   - php-pdo
+   - php-gd
+   - php-mbstring
+   - libselinux-python
+- name: testing php
+  template:
+    src: index.html
+    dest: /var/www/html
+    mode: 0655
+    owner: root
+  notify: restart httpd
+
+
+#- name: creating mysql5.7community-server-repo
+#  yum_repository:
+#      name: mysql-5.7-community-server
+#      description: "repositoty for mysql 5.7 community server"
+#      baseurl: http://repo.mysql.com/yum/mysql-5.7-community/el/7/$basearch/
+#      enabled: yes
+#      gpgcheck: no
+
+#- name: installing mysql
+#  yum:
+#    name: mysql-community-server
+#    state: latest
+#  notify: restart mysqld
+
+#- name: Find temporary password
+#  shell: "echo `grep 'temporary.*root@localhost' /var/log/mysqld.log | sed 's/.#root@localhost: //'`"
+#  register: mysql_root_password_temp
+#  tags: register
+
+#- name: Set the new password using the temporary password
+#  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ mysql_root_password }}'');" --#connect-expired-password -u root -p"{{ mysql_root_password_temp.stdout }}"'

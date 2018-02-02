@@ -1,0 +1,28 @@
+[master]
+52.172.46.239 ansible_ssh_user=r ansible_ssh_user=root ansible_ssh_pass=redhat
+
+
+[slave]
+52.172.44.61 ansible_ssh_user=r ansible_ssh_user=root ansible_ssh_pass=redhat
+
+[mysql:children]
+master
+slave
+
+
+[haproxy]
+13.71.126.248 ansible_ssh_user=root ansible_ssh_pass=redhat
+
+[nagios]
+52.172.33.43 ansible_ssh_user=root ansible_ssh_pass=redhat
+
+[lamp]
+13.71.114.16 ansible_ssh_user=root ansible_ssh_pass=redhat
+13.71.124.74 ansible_ssh_user=root ansible_ssh_pass=redhat
+
+[nagios-client:children]
+lamp
+master
+slave
+
+

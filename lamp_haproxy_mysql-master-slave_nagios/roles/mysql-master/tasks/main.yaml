@@ -1,0 +1,38 @@
+- name: pushing my.cnf
+  template:
+     src: my.cnf.j2
+     dest: /etc/my.cnf
+  notify: restart mysqld
+
+- name: restart mysqld
+  service:
+    name: mysqld 
+    state: restarted
+
+- name: pushing password
+  copy:
+    src: my.cnf
+    dest: /root/.my.cnf
+
+- name: creating slave user
+  mysql_user:
+     name: "slave_user"
+     host: "%"
+     password: "REDhat@123"
+     priv: "*.*:REPLICATION SLAVE"
+     state: present
+
+- name: grepping bin
+  shell: mysql -u root -e "show master status" | grep repli* | awk -F " " '{print $1}'
+  register: master_file
+  tags: register
+
+- name: grepping position
+  shell: mysql -u root -e "show master status" | grep repli* | awk -F " " '{print $2}'
+  register: master_pos
+  tags: register
+
+
+  
+
+  

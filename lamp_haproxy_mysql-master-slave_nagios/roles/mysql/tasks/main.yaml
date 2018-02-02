@@ -1,0 +1,34 @@
+- name: creating mysql5.7community-server-repo
+  yum_repository:
+      name: mysql-5.7-community-server
+      description: "repositoty for mysql 5.7 community server"
+      baseurl: http://repo.mysql.com/yum/mysql-5.7-community/el/7/$basearch/
+      enabled: yes
+      gpgcheck: no
+
+- name: installing mysql
+  yum:
+    name: mysql-community-server
+    state: latest
+
+- name: installing MySQL-python
+  yum:
+    name: MySQL-python
+    state: latest
+
+- name: start mysqld
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+- name: Find temporary password
+  shell: "echo `grep 'temporary.*root@localhost' /var/log/mysqld.log | sed 's/.*root@localhost: //'`"
+  register: mysql_root_password_temp
+  tags: register
+
+- name: Set the new password using the temporary password
+  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ mysql_root_password }}'');" --connect-expired-password -u root -p"{{ mysql_root_password_temp.stdout }}"'
+  ignore_errors: yes
+
+

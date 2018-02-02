@@ -1,0 +1,8 @@
+- name: mysql user creations
+  command: "{{ item }}"
+  with_items:
+     - mysql -u root -e "CREATE USER 'nagios'@'localhost' IDENTIFIED BY '{{ nagios_pass }}'"
+     - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'nagios'@'localhost'"
+     - mysql -u root -e "CREATE USER 'nagios'@'%' IDENTIFIED BY '{{ nagios_pass }}'"
+     - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'nagios'@'%'"
+
